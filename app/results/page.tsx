@@ -2,6 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { translations } from "@/lib/lang";
@@ -418,7 +419,8 @@ const ALL_SCHEMES = [
   },
 ];
 
-export default function Results() {
+// ── INNER COMPONENT (has all the logic) ──────────────────
+function ResultsContent() {
   const params = useSearchParams();
   const router = useRouter();
   const [lang, setLang] = useState("en");
@@ -446,7 +448,6 @@ export default function Results() {
   const tags = ["all", ...Array.from(new Set(matched.map((s) => s.tag)))];
   const filtered = filter === "all" ? matched : matched.filter((s) => s.tag === filter);
 
-  // Estimate total benefit value for banner
   const totalSchemes = matched.length;
 
   return (
@@ -606,7 +607,6 @@ export default function Results() {
                   >
                     {expandedId === scheme.id ? "Less ▲" : "Docs ▾"}
                   </button>
-                  {/* DIRECT APPLY LINK */}
                   <a
                     href={scheme.applyUrl}
                     target="_blank"
@@ -664,9 +664,26 @@ export default function Results() {
           </div>
         )}
 
-        {/* Footer space */}
         <div className="h-8" />
       </div>
     </div>
+  );
+}
+
+// ── OUTER COMPONENT (wraps in Suspense — this fixes the Vercel error!) ──
+export default function Results() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center text-white">
+          <div className="text-center">
+            <div className="text-4xl mb-3">⏳</div>
+            <p className="text-white/40">Loading your schemes...</p>
+          </div>
+        </div>
+      }
+    >
+      <ResultsContent />
+    </Suspense>
   );
 }
