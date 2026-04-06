@@ -4,180 +4,192 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { translations } from "@/lib/lang";
 
-const schemes_preview = [
-  { name: "PM-Kisan", emoji: "🌾", color: "from-green-500/20 to-green-600/5" },
-  { name: "Ayushman Bharat", emoji: "🏥", color: "from-blue-500/20 to-blue-600/5" },
-  { name: "MUDRA Loan", emoji: "💼", color: "from-purple-500/20 to-purple-600/5" },
-  { name: "Sukanya Samriddhi", emoji: "👧", color: "from-pink-500/20 to-pink-600/5" },
-  { name: "PM Scholarship", emoji: "🎓", color: "from-yellow-500/20 to-yellow-600/5" },
-  { name: "PM Awas Yojana", emoji: "🏠", color: "from-orange-500/20 to-orange-600/5" },
-];
-
 export default function Home() {
   const router = useRouter();
   const [lang, setLang] = useState("en");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const l = localStorage.getItem("lang") || "en";
-    setLang(l);
-    setMounted(true);
+    setLang(localStorage.getItem("lang") || "en");
   }, []);
-
-  if (!mounted) return null;
 
   const t = translations[lang];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-x-hidden">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5">
+    <div className="min-h-screen bg-[#f5f7fa] font-sans">
+
+      {/* Top government strip */}
+      <div className="bg-[#1a3a6b] text-white text-xs py-1.5 px-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xl">🇮🇳</span>
-          <span className="font-bold text-lg tracking-tight">Yojana AI</span>
+          <span>🇮🇳</span>
+          <span className="opacity-80">Government of India Initiative</span>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.push("/language")}
-            className="text-white/40 hover:text-white text-sm transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5"
-          >
-            {lang === "en" ? "EN" : lang === "hi" ? "HI" : "MR"} ↕
-          </button>
-          <button
-            onClick={() => router.push("/check")}
-            className="bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all hover:scale-105"
-          >
-            {t.button}
-          </button>
+        <div className="flex items-center gap-3 opacity-70">
+          <span>Skip to main content</span>
+          <span>|</span>
+          <span>Screen Reader</span>
+        </div>
+      </div>
+
+      {/* Main navbar */}
+      <nav className="bg-white border-b-4 border-[#f97316] shadow-sm sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-[#1a3a6b] rounded-lg flex items-center justify-center">
+              <span className="text-2xl">🇮🇳</span>
+            </div>
+            <div>
+              <div className="font-bold text-[#1a3a6b] text-lg leading-tight">
+                Yojana AI
+              </div>
+              <div className="text-xs text-gray-500">
+                सरकारी योजना खोज पोर्टल
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push("/language")}
+              className="text-[#1a3a6b] border border-[#1a3a6b] text-sm px-3 py-1.5 rounded hover:bg-[#1a3a6b] hover:text-white transition-all"
+            >
+              {lang === "en" ? "EN | हि | म" : lang === "hi" ? "हि | EN | म" : "म | EN | हि"}
+            </button>
+            <button
+              onClick={() => router.push("/check")}
+              className="bg-[#f97316] hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2 rounded transition-all"
+            >
+              {t.button}
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16">
-        {/* Background glow */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-orange-500/8 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-blue-600/8 rounded-full blur-3xl" />
-        </div>
+      {/* Hero section */}
+      <section className="bg-gradient-to-b from-[#1a3a6b] to-[#1e4d8c] text-white py-14 px-4">
+        <div className="max-w-4xl mx-auto text-center">
 
-        {/* Ashoka chakra subtle watermark */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] opacity-[0.02] pointer-events-none">
-          <div className="w-full h-full rounded-full border-8 border-white" />
-        </div>
-
-        <div className="relative z-10 text-center max-w-3xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 rounded-full px-4 py-2 mb-8">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-orange-300 text-sm font-medium">
-              AI-Powered • Free • Trusted
-            </span>
+          {/* Trust badge */}
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 mb-6 text-sm">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <span>Free • No Login Required • Official Scheme Data</span>
           </div>
 
-          {/* Headline */}
-          <h1 className="text-4xl sm:text-6xl font-bold leading-tight mb-6">
-            <span className="text-white">{t.title.split(" ").slice(0, -2).join(" ")}</span>
-            <br />
-            <span className="bg-gradient-to-r from-orange-400 via-orange-300 to-yellow-300 bg-clip-text text-transparent">
-              {t.title.split(" ").slice(-2).join(" ")}
-            </span>
+          <h1 className="text-3xl sm:text-5xl font-bold mb-4 leading-tight">
+            {t.title}
           </h1>
-
-          <p className="text-white/40 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+          <p className="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">
             {t.subtitle}
           </p>
 
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => router.push("/check")}
-              className="group w-full sm:w-auto bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-orange-300 text-white font-bold text-lg px-8 py-4 rounded-2xl transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25"
+              className="bg-[#f97316] hover:bg-orange-500 text-white font-bold text-lg px-8 py-4 rounded-lg transition-all shadow-lg"
             >
-              {t.button}
-              <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">→</span>
+              {t.button} →
             </button>
             <button
               onClick={() => router.push("/chat")}
-              className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-lg px-8 py-4 rounded-2xl transition-all duration-200 hover:border-orange-500/30"
+              className="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold text-lg px-8 py-4 rounded-lg transition-all"
             >
-              🤖 Ask Sahayak AI
+              🤖 {lang === "hi" ? "सहायक से पूछें" : lang === "mr" ? "सहायकला विचारा" : "Ask Sahayak AI"}
             </button>
           </div>
 
-          {/* Stats */}
-          <div className="mt-16 grid grid-cols-3 gap-6">
+          {/* Stats row */}
+          <div className="mt-12 grid grid-cols-3 gap-4 max-w-lg mx-auto">
             {[
-              { label: t.hero_stat1, value: "1000+" },
-              { label: t.hero_stat2, value: "22" },
-              { label: t.hero_stat3, value: "∞" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-white/30 text-sm">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Scheme pills floating */}
-        <div className="relative z-10 mt-16 w-full max-w-2xl">
-          <p className="text-center text-white/20 text-xs mb-4 uppercase tracking-widest">
-            Popular Schemes
-          </p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {schemes_preview.map((s, i) => (
-              <div
-                key={i}
-                className={`bg-gradient-to-br ${s.color} border border-white/10 rounded-full px-4 py-2 text-sm text-white/70 flex items-center gap-2`}
-              >
-                <span>{s.emoji}</span>
-                <span>{s.name}</span>
+              { num: "30+", label: lang === "hi" ? "योजनाएं" : lang === "mr" ? "योजना" : "Schemes" },
+              { num: "3", label: lang === "hi" ? "भाषाएं" : lang === "mr" ? "भाषा" : "Languages" },
+              { num: "100%", label: lang === "hi" ? "मुफ्त" : lang === "mr" ? "मोफत" : "Free" },
+            ].map((s, i) => (
+              <div key={i} className="bg-white/10 rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold text-orange-300">{s.num}</div>
+                <div className="text-blue-200 text-sm mt-1">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Tricolor divider */}
+      <div className="flex h-1.5">
+        <div className="flex-1 bg-[#f97316]" />
+        <div className="flex-1 bg-white border-y border-gray-200" />
+        <div className="flex-1 bg-[#16a34a]" />
+      </div>
+
       {/* How it works */}
-      <section className="px-6 py-20 relative">
+      <section className="py-14 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4">{t.how_title}</h2>
-          <p className="text-white/30 text-center mb-14 text-sm">Simple. Fast. Trusted.</p>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold text-[#1a3a6b] mb-2">
+              {t.how_title}
+            </h2>
+            <p className="text-gray-500 text-sm">
+              {lang === "hi" ? "सरल • तेज़ • विश्वसनीय" : lang === "mr" ? "सोपे • जलद • विश्वासार्ह" : "Simple • Fast • Trusted"}
+            </p>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { num: "01", title: t.how1_title, desc: t.how1_desc, icon: "📝" },
-              { num: "02", title: t.how2_title, desc: t.how2_desc, icon: "🤖" },
-              { num: "03", title: t.how3_title, desc: t.how3_desc, icon: "✅" },
+              { num: "01", icon: "📝", title: t.how1_title, desc: t.how1_desc, color: "border-orange-400" },
+              { num: "02", icon: "🤖", title: t.how2_title, desc: t.how2_desc, color: "border-blue-500" },
+              { num: "03", icon: "✅", title: t.how3_title, desc: t.how3_desc, color: "border-green-500" },
             ].map((step, i) => (
-              <div
-                key={i}
-                className="relative bg-white/3 border border-white/8 rounded-2xl p-6 hover:bg-white/6 hover:border-orange-500/20 transition-all"
-              >
-                <div className="text-5xl font-black text-white/5 absolute top-4 right-4">
-                  {step.num}
-                </div>
-                <div className="text-4xl mb-4">{step.icon}</div>
-                <h3 className="text-white font-bold text-lg mb-2">{step.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{step.desc}</p>
+              <div key={i} className={`bg-gray-50 border-t-4 ${step.color} rounded-xl p-6 text-center`}>
+                <div className="text-4xl mb-3">{step.icon}</div>
+                <div className="text-[#1a3a6b] font-bold text-lg mb-2">{step.title}</div>
+                <div className="text-gray-500 text-sm leading-relaxed">{step.desc}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Bottom */}
-      <section className="px-6 py-20">
-        <div className="max-w-2xl mx-auto text-center bg-gradient-to-br from-orange-500/10 to-blue-600/10 border border-orange-500/20 rounded-3xl p-12">
-          <h2 className="text-3xl font-bold mb-4">
-            Start Finding Your Schemes
+      {/* Scheme categories */}
+      <section className="py-14 px-4 bg-[#f5f7fa]">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-[#1a3a6b] text-center mb-8">
+            {lang === "hi" ? "योजनाओं की श्रेणियां" : lang === "mr" ? "योजनांचे प्रकार" : "Scheme Categories"}
           </h2>
-          <p className="text-white/40 mb-8">
-            Takes less than 2 minutes. No login required.
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { emoji: "🌾", label: lang === "hi" ? "किसान" : "Farmers", count: "3 schemes" },
+              { emoji: "🎓", label: lang === "hi" ? "छात्र" : "Students", count: "3 schemes" },
+              { emoji: "💼", label: lang === "hi" ? "व्यवसाय" : "Business", count: "5 schemes" },
+              { emoji: "👩", label: lang === "hi" ? "महिला" : "Women", count: "4 schemes" },
+              { emoji: "🏥", label: lang === "hi" ? "स्वास्थ्य" : "Health", count: "3 schemes" },
+              { emoji: "🏠", label: lang === "hi" ? "आवास" : "Housing", count: "2 schemes" },
+              { emoji: "👷", label: lang === "hi" ? "मजदूर" : "Workers", count: "4 schemes" },
+              { emoji: "🎒", label: "SC/ST/OBC", count: "3 schemes" },
+            ].map((cat, i) => (
+              <button
+                key={i}
+                onClick={() => router.push("/check")}
+                className="bg-white border border-gray-200 hover:border-[#f97316] hover:shadow-md rounded-xl p-4 text-center transition-all group"
+              >
+                <div className="text-3xl mb-2">{cat.emoji}</div>
+                <div className="font-semibold text-[#1a3a6b] text-sm group-hover:text-orange-500">{cat.label}</div>
+                <div className="text-gray-400 text-xs mt-1">{cat.count}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-14 px-4 bg-[#1a3a6b] text-white text-center">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold mb-3">
+            {lang === "hi" ? "अभी शुरू करें — 2 मिनट में जानें" : lang === "mr" ? "आत्ताच सुरू करा" : "Start Now — Know in 2 Minutes"}
+          </h2>
+          <p className="text-blue-200 mb-6 text-sm">
+            {lang === "hi" ? "कोई लॉगिन नहीं • कोई शुल्क नहीं • पूरी तरह सुरक्षित" : "No login • No fees • Completely safe"}
           </p>
           <button
             onClick={() => router.push("/check")}
-            className="bg-orange-500 hover:bg-orange-400 text-white font-bold text-lg px-8 py-4 rounded-2xl transition-all hover:scale-105"
+            className="bg-[#f97316] hover:bg-orange-500 text-white font-bold text-lg px-10 py-4 rounded-lg transition-all shadow-xl"
           >
             {t.button} →
           </button>
@@ -185,11 +197,21 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 px-6 py-8 text-center">
-        <p className="text-white/20 text-sm">
-          Yojana AI — Made for Bharat • Not affiliated with Government of India
-        </p>
+      <footer className="bg-[#0f2347] text-white py-8 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="text-2xl">🇮🇳</span>
+            <span className="font-bold text-lg">Yojana AI</span>
+          </div>
+          <p className="text-blue-300 text-sm mb-2">
+            Helping Indian citizens discover government schemes they deserve
+          </p>
+          <p className="text-blue-400 text-xs">
+            Not affiliated with Government of India • Scheme data sourced from official portals • Always verify at myscheme.gov.in
+          </p>
+        </div>
       </footer>
+
     </div>
   );
 }

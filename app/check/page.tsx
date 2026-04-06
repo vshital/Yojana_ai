@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { translations } from "@/lib/lang";
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 2;
 
 export default function Check() {
   const router = useRouter();
@@ -35,10 +35,6 @@ export default function Check() {
     "Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi","Puducherry",
   ];
 
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
   const toggleSpecial = (val: string) => {
     setForm((prev) => ({
       ...prev,
@@ -48,255 +44,288 @@ export default function Check() {
     }));
   };
 
+  const canProceed = () => {
+    if (step === 1) return form.name && form.age && form.gender && form.state;
+    return form.occupation && form.income && form.category;
+  };
+
   const handleSubmit = () => {
     localStorage.setItem("user", JSON.stringify(form));
     const params = new URLSearchParams({
-      name: form.name,
-      age: form.age,
-      gender: form.gender,
-      state: form.state,
-      category: form.category,
-      occupation: form.occupation,
-      income: form.income,
+      name: form.name, age: form.age, gender: form.gender,
+      state: form.state, category: form.category,
+      occupation: form.occupation, income: form.income,
       special: form.special.join(","),
     });
     router.push(`/results?${params}`);
   };
 
-  const canProceed = () => {
-    if (step === 1) return form.name && form.age && form.gender;
-    if (step === 2) return form.state && form.category;
-    if (step === 3) return form.occupation && form.income;
-    return true;
-  };
-
-  const inputCls =
-    "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-white/20 focus:outline-none focus:border-orange-500/60 focus:bg-white/8 transition-all";
-  const selectCls =
-    "w-full bg-[#0f0f18] border border-white/10 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:border-orange-500/60 transition-all appearance-none";
-  const labelCls = "block text-white/60 text-sm font-medium mb-2";
+  const btnBase = "w-full py-3.5 rounded-lg border-2 font-semibold text-sm transition-all text-left px-4 flex items-center gap-3";
+  const btnActive = "border-[#1a3a6b] bg-[#eef2ff] text-[#1a3a6b]";
+  const btnInactive = "border-gray-200 bg-white text-gray-600 hover:border-gray-300";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
-      {/* Top bar */}
-      <div className="flex items-center gap-4 px-6 pt-6 pb-4">
-        <button
-          onClick={() => (step === 1 ? router.back() : setStep(step - 1))}
-          className="text-white/40 hover:text-white transition-colors text-sm flex items-center gap-1"
-        >
-          ← {t.back}
-        </button>
-        <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all duration-500"
-            style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
-          />
+    <div className="min-h-screen bg-[#f5f7fa]">
+
+      {/* Header */}
+      <div className="bg-[#1a3a6b] text-white px-4 py-4">
+        <div className="max-w-lg mx-auto flex items-center gap-3">
+          <button
+            onClick={() => step === 1 ? router.push("/home") : setStep(1)}
+            className="text-blue-200 hover:text-white text-sm"
+          >
+            ← {t.back}
+          </button>
+          <div className="flex-1">
+            <div className="text-sm font-semibold">{t.form_title}</div>
+            <div className="text-blue-300 text-xs">{t.step} {step} {t.of} {TOTAL_STEPS}</div>
+          </div>
+          <div className="text-orange-300 text-sm font-bold">
+            {step === 1 ? "50%" : "100%"}
+          </div>
         </div>
-        <span className="text-white/30 text-sm">
-          {t.step} {step} {t.of} {TOTAL_STEPS}
-        </span>
+        {/* Progress bar */}
+        <div className="max-w-lg mx-auto mt-3">
+          <div className="h-2 bg-blue-900 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#f97316] rounded-full transition-all duration-500"
+              style={{ width: step === 1 ? "50%" : "100%" }}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Form */}
-      <div className="flex-1 px-6 py-6 max-w-lg mx-auto w-full">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-white mb-1">{t.form_title}</h1>
-          <p className="text-white/30 text-sm">{t.form_subtitle}</p>
-        </div>
+      {/* Form body */}
+      <div className="max-w-lg mx-auto px-4 py-6">
 
-        {/* Step 1 — Personal */}
+        {/* Step 1 — Who are you */}
         {step === 1 && (
-          <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
-            <div>
-              <label className={labelCls}>{t.name}</label>
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="e.g. Ramesh Kumar"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className={labelCls}>{t.age}</label>
-              <input
-                name="age"
-                type="number"
-                value={form.age}
-                onChange={handleChange}
-                placeholder="e.g. 28"
-                min="1"
-                max="120"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className={labelCls}>{t.gender}</label>
-              <div className="grid grid-cols-3 gap-3">
-                {["male", "female", "other"].map((g) => (
-                  <button
-                    key={g}
-                    type="button"
-                    onClick={() => setForm({ ...form, gender: g })}
-                    className={`py-3 rounded-xl border font-medium text-sm transition-all
-                      ${form.gender === g
-                        ? "bg-orange-500 border-orange-400 text-white"
-                        : "bg-white/5 border-white/10 text-white/50 hover:border-orange-500/30"
-                      }`}
-                  >
-                    {g === "male" ? "👨 " : g === "female" ? "👩 " : "🧑 "}
-                    {t[g]}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+          <div>
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-4">
+              <h2 className="text-[#1a3a6b] font-bold text-lg mb-1">
+                {lang === "hi" ? "आपकी जानकारी" : lang === "mr" ? "तुमची माहिती" : "Your Basic Details"}
+              </h2>
+              <p className="text-gray-400 text-sm mb-5">
+                {lang === "hi" ? "सही जानकारी भरें — बेहतर परिणाम मिलेंगे" : "Fill correctly for best results"}
+              </p>
 
-        {/* Step 2 — Location & Category */}
-        {step === 2 && (
-          <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
-            <div>
-              <label className={labelCls}>{t.state}</label>
-              <div className="relative">
-                <select
-                  name="state"
-                  value={form.state}
-                  onChange={handleChange}
-                  className={selectCls}
-                >
-                  <option value="">Select your state</option>
-                  {states.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+              {/* Name */}
+              <div className="mb-4">
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.name} *
+                </label>
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  placeholder={lang === "hi" ? "जैसे: रमेश कुमार" : "e.g. Ramesh Kumar"}
+                  className="w-full border-2 border-gray-200 focus:border-[#1a3a6b] rounded-lg px-4 py-3 text-gray-800 text-sm outline-none transition-all"
+                />
+              </div>
+
+              {/* Age */}
+              <div className="mb-4">
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.age} *
+                </label>
+                <input
+                  type="number"
+                  value={form.age}
+                  onChange={(e) => setForm({ ...form, age: e.target.value })}
+                  placeholder={lang === "hi" ? "जैसे: 28" : "e.g. 28"}
+                  min="1" max="100"
+                  className="w-full border-2 border-gray-200 focus:border-[#1a3a6b] rounded-lg px-4 py-3 text-gray-800 text-sm outline-none transition-all"
+                />
+              </div>
+
+              {/* Gender */}
+              <div className="mb-4">
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.gender} *
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { val: "male", label: lang === "hi" ? "👨 पुरुष" : "👨 Male" },
+                    { val: "female", label: lang === "hi" ? "👩 महिला" : "👩 Female" },
+                    { val: "other", label: lang === "hi" ? "🧑 अन्य" : "🧑 Other" },
+                  ].map((g) => (
+                    <button
+                      key={g.val}
+                      onClick={() => setForm({ ...form, gender: g.val })}
+                      className={`py-3 rounded-lg border-2 font-semibold text-sm transition-all
+                        ${form.gender === g.val
+                          ? "border-[#1a3a6b] bg-[#eef2ff] text-[#1a3a6b]"
+                          : "border-gray-200 text-gray-500 hover:border-gray-300"
+                        }`}
+                    >
+                      {g.label}
+                    </button>
                   ))}
-                </select>
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none">▾</span>
+                </div>
               </div>
-            </div>
-            <div>
-              <label className={labelCls}>{t.category}</label>
-              <div className="grid grid-cols-2 gap-3">
-                {["general", "obc", "sc", "st"].map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setForm({ ...form, category: c })}
-                    className={`py-3 rounded-xl border font-medium text-sm transition-all
-                      ${form.category === c
-                        ? "bg-orange-500 border-orange-400 text-white"
-                        : "bg-white/5 border-white/10 text-white/50 hover:border-orange-500/30"
-                      }`}
-                  >
-                    {t[c]}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
 
-        {/* Step 3 — Occupation & Income */}
-        {step === 3 && (
-          <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
-            <div>
-              <label className={labelCls}>{t.occupation}</label>
-              <div className="grid grid-cols-2 gap-3">
-                {["student", "farmer", "business", "employed", "unemployed"].map((o) => (
-                  <button
-                    key={o}
-                    type="button"
-                    onClick={() => setForm({ ...form, occupation: o })}
-                    className={`py-3 px-3 rounded-xl border font-medium text-sm transition-all text-left
-                      ${form.occupation === o
-                        ? "bg-orange-500 border-orange-400 text-white"
-                        : "bg-white/5 border-white/10 text-white/50 hover:border-orange-500/30"
-                      }`}
-                  >
-                    {o === "student" ? "🎓 " : o === "farmer" ? "🌾 " : o === "business" ? "💼 " : o === "employed" ? "👔 " : "🔍 "}
-                    {t[o]}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label className={labelCls}>{t.income}</label>
-              <div className="grid grid-cols-2 gap-3">
-                {["below1L", "1to2L", "2to5L", "above5L"].map((inc) => (
-                  <button
-                    key={inc}
-                    type="button"
-                    onClick={() => setForm({ ...form, income: inc })}
-                    className={`py-3 rounded-xl border font-medium text-sm transition-all
-                      ${form.income === inc
-                        ? "bg-orange-500 border-orange-400 text-white"
-                        : "bg-white/5 border-white/10 text-white/50 hover:border-orange-500/30"
-                      }`}
-                  >
-                    {t[inc]}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4 — Special Conditions */}
-        {step === 4 && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <p className="text-white/40 text-sm mb-5">
-              Select all that apply (optional — helps us find more schemes)
-            </p>
-            <div className="space-y-3">
-              {["bpl", "disabled", "woman_entrepreneur", "minority"].map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => toggleSpecial(s)}
-                  className={`w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left
-                    ${form.special.includes(s)
-                      ? "bg-orange-500/10 border-orange-500/40 text-white"
-                      : "bg-white/5 border-white/10 text-white/50 hover:border-orange-500/20"
-                    }`}
+              {/* State */}
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.state} *
+                </label>
+                <select
+                  value={form.state}
+                  onChange={(e) => setForm({ ...form, state: e.target.value })}
+                  className="w-full border-2 border-gray-200 focus:border-[#1a3a6b] rounded-lg px-4 py-3 text-gray-800 text-sm outline-none bg-white transition-all"
                 >
-                  <div
-                    className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all
-                      ${form.special.includes(s)
-                        ? "bg-orange-500 border-orange-400"
-                        : "border-white/20"
-                      }`}
-                  >
-                    {form.special.includes(s) && <span className="text-white text-xs">✓</span>}
-                  </div>
-                  <span className="font-medium text-sm">{t[s]}</span>
-                </button>
-              ))}
+                  <option value="">{lang === "hi" ? "राज्य चुनें" : "Select your state"}</option>
+                  {states.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* Buttons */}
-        <div className="mt-10 flex gap-3">
-          {step < TOTAL_STEPS ? (
             <button
-              onClick={() => setStep(step + 1)}
+              onClick={() => setStep(2)}
               disabled={!canProceed()}
-              className={`flex-1 py-4 rounded-2xl font-bold text-lg transition-all
+              className={`w-full py-4 rounded-lg font-bold text-lg transition-all
                 ${canProceed()
-                  ? "bg-orange-500 hover:bg-orange-400 text-white hover:scale-[1.02]"
-                  : "bg-white/5 text-white/20 cursor-not-allowed"
+                  ? "bg-[#1a3a6b] hover:bg-[#15306b] text-white shadow-md"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
             >
               {t.next}
             </button>
-          ) : (
+          </div>
+        )}
+
+        {/* Step 2 — Your situation */}
+        {step === 2 && (
+          <div>
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-4">
+              <h2 className="text-[#1a3a6b] font-bold text-lg mb-1">
+                {lang === "hi" ? "आपकी स्थिति" : lang === "mr" ? "तुमची परिस्थिती" : "Your Situation"}
+              </h2>
+              <p className="text-gray-400 text-sm mb-5">
+                {lang === "hi" ? "यह जानकारी योजनाएं खोजने में मदद करती है" : "This helps us match the right schemes"}
+              </p>
+
+              {/* Category */}
+              <div className="mb-4">
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.category} *
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { val: "general", label: "General" },
+                    { val: "obc", label: "OBC" },
+                    { val: "sc", label: "SC (Dalit)" },
+                    { val: "st", label: "ST (Tribal)" },
+                  ].map((c) => (
+                    <button
+                      key={c.val}
+                      onClick={() => setForm({ ...form, category: c.val })}
+                      className={`${btnBase} ${form.category === c.val ? btnActive : btnInactive}`}
+                    >
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${form.category === c.val ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`} />
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Occupation */}
+              <div className="mb-4">
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.occupation} *
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { val: "student", label: lang === "hi" ? "🎓 छात्र" : "🎓 Student" },
+                    { val: "farmer", label: lang === "hi" ? "🌾 किसान" : "🌾 Farmer" },
+                    { val: "business", label: lang === "hi" ? "💼 व्यवसाय" : "💼 Business" },
+                    { val: "employed", label: lang === "hi" ? "👔 नौकरी" : "👔 Employed" },
+                    { val: "unemployed", label: lang === "hi" ? "🔍 बेरोजगार" : "🔍 Unemployed" },
+                  ].map((o) => (
+                    <button
+                      key={o.val}
+                      onClick={() => setForm({ ...form, occupation: o.val })}
+                      className={`${btnBase} ${form.occupation === o.val ? btnActive : btnInactive}`}
+                    >
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${form.occupation === o.val ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`} />
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Income */}
+              <div className="mb-4">
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.income} *
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { val: "below1L", label: "Below ₹1 Lakh" },
+                    { val: "1to2L", label: "₹1L – ₹2L" },
+                    { val: "2to5L", label: "₹2L – ₹5L" },
+                    { val: "above5L", label: "Above ₹5L" },
+                  ].map((inc) => (
+                    <button
+                      key={inc.val}
+                      onClick={() => setForm({ ...form, income: inc.val })}
+                      className={`${btnBase} ${form.income === inc.val ? btnActive : btnInactive}`}
+                    >
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${form.income === inc.val ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`} />
+                      {inc.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Special */}
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
+                  {t.special} <span className="text-gray-400 font-normal">(Optional)</span>
+                </label>
+                <div className="space-y-2">
+                  {[
+                    { val: "bpl", label: lang === "hi" ? "BPL कार्ड धारक" : "BPL Card Holder" },
+                    { val: "disabled", label: lang === "hi" ? "दिव्यांग" : "Differently Abled" },
+                    { val: "woman_entrepreneur", label: lang === "hi" ? "महिला उद्यमी" : "Woman Entrepreneur" },
+                    { val: "minority", label: lang === "hi" ? "अल्पसंख्यक" : "Minority Community" },
+                  ].map((s) => (
+                    <button
+                      key={s.val}
+                      onClick={() => toggleSpecial(s.val)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all text-left
+                        ${form.special.includes(s.val)
+                          ? "border-[#1a3a6b] bg-[#eef2ff] text-[#1a3a6b]"
+                          : "border-gray-200 text-gray-600 hover:border-gray-300"
+                        }`}
+                    >
+                      <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0
+                        ${form.special.includes(s.val) ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`}>
+                        {form.special.includes(s.val) && <span className="text-white text-xs">✓</span>}
+                      </span>
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <button
               onClick={handleSubmit}
-              className="flex-1 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-400 hover:to-orange-300 text-white hover:scale-[1.02] transition-all"
+              disabled={!canProceed()}
+              className={`w-full py-4 rounded-lg font-bold text-lg transition-all
+                ${canProceed()
+                  ? "bg-[#f97316] hover:bg-orange-600 text-white shadow-md"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                }`}
             >
               {t.submit}
             </button>
-          )}
-        </div>
+
+            <p className="text-center text-gray-400 text-xs mt-3">
+              🔒 {lang === "hi" ? "आपकी जानकारी सुरक्षित है" : "Your information is safe & private"}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
