@@ -348,7 +348,7 @@ function Results() {
   const [view, setView] = useState<"steps" | "docs">("docs");
 
   useEffect(() => {
-    setLang(localStorage.getItem("lang") || "en");
+    localStorage.setItem("matchedSchemes", JSON.stringify(matched));
   }, []);
 
   const t = translations[lang];
@@ -493,9 +493,9 @@ function Results() {
                   <span className={`flex items-center gap-1 font-medium px-2 py-1 rounded-full
                     ${scheme.applyMode === "online" ? "bg-green-50 text-green-700" :
                       scheme.applyMode === "offline" ? "bg-orange-50 text-orange-700" :
-                      "bg-blue-50 text-blue-700"}`}>
+                        "bg-blue-50 text-blue-700"}`}>
                     {scheme.applyMode === "online" ? "💻 Apply Online" :
-                     scheme.applyMode === "offline" ? "🏢 Visit Office" : "💻🏢 Online or Office"}
+                      scheme.applyMode === "offline" ? "🏢 Visit Office" : "💻🏢 Online or Office"}
                   </span>
                   <span className="text-gray-400">⏱ {scheme.time}</span>
                   {scheme.helpline && (

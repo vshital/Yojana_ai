@@ -32,8 +32,8 @@ export default function Chat() {
       text: l === "hi"
         ? "नमस्ते! मैं सहायक हूं। सरकारी योजनाओं के बारे में कुछ भी पूछें। 🙏"
         : l === "mr"
-        ? "नमस्कार! मी सहायक आहे. सरकारी योजनांबद्दल काहीही विचारा. 🙏"
-        : "Namaste! I'm Sahayak. Ask me anything about Indian government schemes. 🙏",
+          ? "नमस्कार! मी सहायक आहे. सरकारी योजनांबद्दल काहीही विचारा. 🙏"
+          : "Namaste! I'm Sahayak. Ask me anything about Indian government schemes. 🙏",
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     }]);
   }, []);
@@ -55,7 +55,12 @@ export default function Chat() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg, user, lang }),
+        body: JSON.stringify({
+          message: msg,
+          user,
+          lang,
+          matchedSchemes: JSON.parse(localStorage.getItem("matchedSchemes") || "[]")
+        }),
       });
       const data = await res.json();
       setChat((prev) => [...prev, { role: "bot", text: data.reply || "Sorry, try again.", time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]);
