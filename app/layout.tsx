@@ -5,14 +5,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Yojana AI — Find Government Benefits You Deserve",
-  description: "India's AI-powered welfare navigator. Find and apply for government schemes based on your profile. Free, instant, trusted.",
+  description: "India's AI-powered welfare navigator. Free, instant, trusted.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -27,29 +23,38 @@ export default function RootLayout({
               function googleTranslateElementInit() {
                 new google.translate.TranslateElement({
                   pageLanguage: 'en',
-                  includedLanguages: 'hi,mr,ta,te,bn,gu,pa,kn,ml,or',
-                  autoDisplay: false,
-                  layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                  includedLanguages: 'hi,mr,ta,te,bn,gu,pa,kn,ml',
+                  autoDisplay: false
                 }, 'google_translate_element');
               }
 
-              function changeLanguage(lang) {
+              function applyTranslation() {
+                var gtLang = localStorage.getItem('gtLang');
+                if (!gtLang) return;
                 var select = document.querySelector('.goog-te-combo');
                 if (select) {
-                  select.value = lang;
+                  select.value = gtLang;
                   select.dispatchEvent(new Event('change'));
+                } else {
+                  setTimeout(applyTranslation, 500);
                 }
               }
+
+              window.addEventListener('load', function() {
+                setTimeout(applyTranslation, 1500);
+              });
             `,
           }}
         />
         <style dangerouslySetInnerHTML={{
           __html: `
             .goog-te-banner-frame { display: none !important; }
-            .goog-te-menu-value span { display: none; }
+            .goog-logo-link { display: none !important; }
+            .goog-te-gadget { display: none !important; }
             body { top: 0 !important; }
             #google_translate_element { display: none; }
             .skiptranslate { display: none !important; }
+            .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
           `
         }} />
       </head>
