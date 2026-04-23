@@ -4,117 +4,80 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const languages = [
-  {
-    code: "en",
-    name: "English",
-    native: "English",
-    flag: "🇬🇧",
-    desc: "Continue in English",
-  },
-  {
-    code: "hi",
-    name: "Hindi",
-    native: "हिंदी",
-    flag: "🇮🇳",
-    desc: "हिंदी में जारी रखें",
-  },
-  {
-    code: "mr",
-    name: "Marathi",
-    native: "मराठी",
-    flag: "🏛️",
-    desc: "मराठीत सुरू ठेवा",
-  },
+  { code: "en", native: "English", flag: "🇬🇧", desc: "Continue in English", gtCode: "" },
+  { code: "hi", native: "हिंदी", flag: "🇮🇳", desc: "हिंदी में जारी रखें", gtCode: "hi" },
+  { code: "mr", native: "मराठी", flag: "🏛️", desc: "मराठीत सुरू ठेवा", gtCode: "mr" },
+  { code: "ta", native: "தமிழ்", flag: "🌟", desc: "தமிழில் தொடரவும்", gtCode: "ta" },
+  { code: "te", native: "తెలుగు", flag: "🌟", desc: "తెలుగులో కొనసాగించు", gtCode: "te" },
+  { code: "bn", native: "বাংলা", flag: "🌟", desc: "বাংলায় চালিয়ে যান", gtCode: "bn" },
+  { code: "gu", native: "ગુજરાતી", flag: "🌟", desc: "ગુજરાતીમાં ચાલુ રાખો", gtCode: "gu" },
+  { code: "pa", native: "ਪੰਜਾਬੀ", flag: "🌟", desc: "ਪੰਜਾਬੀ ਵਿੱਚ ਜਾਰੀ ਰੱਖੋ", gtCode: "pa" },
 ];
 
 export default function LanguagePage() {
   const router = useRouter();
   const [selected, setSelected] = useState<string | null>(null);
 
-  const selectLanguage = (lang: string) => {
-    setSelected(lang);
-    localStorage.setItem("lang", lang);
+  const selectLanguage = (lang: typeof languages[0]) => {
+    setSelected(lang.code);
+    localStorage.setItem("lang", lang.code);
+    localStorage.setItem("gtLang", lang.gtCode);
+
+    // Trigger Google Translate
+    if (lang.gtCode) {
+      setTimeout(() => {
+        const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+        if (select) {
+          select.value = lang.gtCode;
+          select.dispatchEvent(new Event('change'));
+        }
+      }, 500);
+    }
+
     setTimeout(() => router.replace("/home"), 300);
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 right-0 w-[300px] h-[300px] bg-green-500/5 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen bg-[#f5f7fa] flex flex-col items-center justify-center p-6">
 
-      <div className="relative z-10 w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 mb-6">
-            <span className="text-2xl">🇮🇳</span>
-            <span className="text-white font-bold text-xl tracking-tight">
-              Yojana AI
-            </span>
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Choose Your Language
-          </h1>
-          <p className="text-white/40 text-sm">
-            अपनी भाषा चुनें • तुमची भाषा निवडा
-          </p>
+      {/* Header */}
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-2xl px-5 py-3 mb-5 shadow-sm">
+          <span className="text-2xl">🇮🇳</span>
+          <span className="text-[#1a3a6b] font-bold text-xl">Yojana AI</span>
         </div>
-
-        {/* Language cards */}
-        <div className="flex flex-col gap-3">
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => selectLanguage(lang.code)}
-              className={`group relative w-full flex items-center gap-4 p-5 rounded-2xl border transition-all duration-200 text-left
-                ${
-                  selected === lang.code
-                    ? "bg-orange-500 border-orange-400 scale-[0.98]"
-                    : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-orange-500/40 hover:scale-[1.01]"
-                }`}
-            >
-              <span className="text-3xl">{lang.flag}</span>
-              <div className="flex-1">
-                <div
-                  className={`font-bold text-lg ${
-                    selected === lang.code ? "text-white" : "text-white"
-                  }`}
-                >
-                  {lang.native}
-                </div>
-                <div
-                  className={`text-sm ${
-                    selected === lang.code
-                      ? "text-orange-100"
-                      : "text-white/40"
-                  }`}
-                >
-                  {lang.desc}
-                </div>
-              </div>
-              <div
-                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all
-                ${
-                  selected === lang.code
-                    ? "border-white bg-white"
-                    : "border-white/20 group-hover:border-orange-400"
-                }`}
-              >
-                {selected === lang.code && (
-                  <div className="w-2.5 h-2.5 rounded-full bg-orange-500" />
-                )}
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <p className="text-center text-white/20 text-xs mt-8">
-          More languages coming soon • और भाषाएं जल्द आ रही हैं
+        <h1 className="text-2xl font-bold text-[#1a3a6b] mb-1">
+          Choose Your Language
+        </h1>
+        <p className="text-gray-400 text-sm">
+          अपनी भाषा चुनें • तुमची भाषा निवडा
         </p>
       </div>
+
+      {/* Language grid */}
+      <div className="w-full max-w-sm grid grid-cols-2 gap-3">
+        {languages.map((lang) => (
+          <button
+            key={lang.code}
+            onClick={() => selectLanguage(lang)}
+            className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left
+              ${selected === lang.code
+                ? "border-[#1a3a6b] bg-[#eef2ff]"
+                : "border-gray-200 bg-white hover:border-[#1a3a6b]/40 hover:shadow-sm"
+              }`}
+          >
+            <span className="text-2xl">{lang.flag}</span>
+            <div>
+              <div className="font-bold text-[#1a3a6b] text-sm">{lang.native}</div>
+              <div className="text-gray-400 text-xs">{lang.code.toUpperCase()}</div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <p className="text-gray-300 text-xs mt-6">
+        More languages available via Google Translate
+      </p>
     </div>
   );
 }
