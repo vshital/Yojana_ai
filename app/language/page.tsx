@@ -37,7 +37,8 @@ export default function LanguagePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    // notranslate — this page is NEVER translated by Google
+    <div className="notranslate min-h-screen bg-gray-50 flex flex-col" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet" />
 
       {/* Top strip */}
@@ -56,11 +57,11 @@ export default function LanguagePage() {
           <h1 className="text-2xl font-bold text-[#1B3A6B] mb-1" style={{ fontFamily: "'Noto Serif', serif" }}>
             Yojana AI
           </h1>
-          <p className="text-gray-500 text-sm">Select your preferred language to continue</p>
-          <p className="text-gray-400 text-xs mt-1">अपनी भाषा चुनें · तुमची भाषा निवडा</p>
+          <p className="text-gray-500 text-sm">Select your preferred language</p>
+          <p className="text-gray-400 text-xs mt-1">अपनी भाषा चुनें · तुमची भाषा निवडा · உங்கள் மொழியை தேர்ந்தெடுக்கவும்</p>
         </div>
 
-        {/* Language grid */}
+        {/* Language grid — each always shows in its own script */}
         <div className="w-full max-w-sm">
           <div className="grid grid-cols-2 gap-3">
             {languages.map(lang => (
@@ -81,6 +82,7 @@ export default function LanguagePage() {
                   {lang.code.toUpperCase()}
                 </div>
                 <div>
+                  {/* Native script — always correct, never translated */}
                   <div className="font-bold text-gray-800 text-sm">{lang.native}</div>
                   <div className="text-gray-400 text-xs">{lang.label}</div>
                 </div>

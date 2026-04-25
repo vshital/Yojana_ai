@@ -21,6 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: `
               function googleTranslateElementInit() {
+                if (window.location.pathname === '/language') return;
+                if (window.location.pathname === '/chat') return;
                 new google.translate.TranslateElement({
                   pageLanguage: 'en',
                   includedLanguages: 'hi,mr,ta,te,bn,gu,pa,kn,ml',
@@ -29,6 +31,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               }
 
               function applyTranslation() {
+                if (window.location.pathname === '/language') return;
+                if (window.location.pathname === '/chat') return;
                 var gtLang = localStorage.getItem('gtLang');
                 if (!gtLang) return;
                 var select = document.querySelector('.goog-te-combo');
