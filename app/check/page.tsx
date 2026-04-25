@@ -2,30 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { translations } from "@/lib/lang";
 
 const TOTAL_STEPS = 2;
 
 export default function Check() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [lang, setLang] = useState("en");
   const [form, setForm] = useState({
-    name: "",
-    age: "",
-    gender: "",
-    state: "",
-    category: "",
-    occupation: "",
-    income: "",
+    name: "", age: "", gender: "", state: "",
+    category: "", occupation: "", income: "",
     special: [] as string[],
   });
-
-  useEffect(() => {
-    setLang(localStorage.getItem("lang") || "en");
-  }, []);
-
-  const t = translations[lang];
 
   const states = [
     "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
@@ -36,10 +23,10 @@ export default function Check() {
   ];
 
   const toggleSpecial = (val: string) => {
-    setForm((prev) => ({
+    setForm(prev => ({
       ...prev,
       special: prev.special.includes(val)
-        ? prev.special.filter((s) => s !== val)
+        ? prev.special.filter(s => s !== val)
         : [...prev.special, val],
     }));
   };
@@ -60,102 +47,96 @@ export default function Check() {
     router.push(`/results?${params}`);
   };
 
-  const btnBase = "w-full py-3.5 rounded-lg border-2 font-semibold text-sm transition-all text-left px-4 flex items-center gap-3";
-  const btnActive = "border-[#1a3a6b] bg-[#eef2ff] text-[#1a3a6b]";
-  const btnInactive = "border-gray-200 bg-white text-gray-600 hover:border-gray-300";
+  const inputCls = "w-full border border-gray-200 focus:border-[#1B3A6B] focus:ring-2 focus:ring-[#1B3A6B]/10 rounded-lg px-4 py-3 text-gray-800 text-sm outline-none transition-all bg-white placeholder-gray-400";
+  const selectCls = "w-full border border-gray-200 focus:border-[#1B3A6B] focus:ring-2 focus:ring-[#1B3A6B]/10 rounded-lg px-4 py-3 text-gray-800 text-sm outline-none transition-all bg-white appearance-none cursor-pointer";
+  const optionActive = "border-[#1B3A6B] bg-[#EEF2FF] text-[#1B3A6B] font-semibold";
+  const optionInactive = "border-gray-200 text-gray-600 hover:border-gray-300 bg-white";
 
   return (
-    <div className="min-h-screen bg-[#f5f7fa]">
+    <div className="min-h-screen bg-gray-50" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet" />
 
       {/* Header */}
-      <div className="bg-[#1a3a6b] text-white px-4 py-4">
-        <div className="max-w-lg mx-auto flex items-center gap-3">
-          <button
-            onClick={() => step === 1 ? router.push("/home") : setStep(1)}
-            className="text-blue-200 hover:text-white text-sm"
-          >
-            ← {t.back}
-          </button>
-          <div className="flex-1">
-            <div className="text-sm font-semibold">{t.form_title}</div>
-            <div className="text-blue-300 text-xs">{t.step} {step} {t.of} {TOTAL_STEPS}</div>
+      <div className="bg-[#1B3A6B] text-white">
+        <div className="max-w-2xl mx-auto px-6 py-5">
+          <div className="flex items-center justify-between mb-5">
+            <button
+              onClick={() => step === 1 ? router.push("/home") : setStep(1)}
+              className="flex items-center gap-2 text-blue-200 hover:text-white text-sm transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Back
+            </button>
+            <div className="text-center">
+              <div className="font-bold text-sm tracking-wide" style={{ fontFamily: "'Noto Serif', serif" }}>
+                Yojana AI
+              </div>
+              <div className="text-blue-300 text-xs">Step {step} of {TOTAL_STEPS}</div>
+            </div>
+            <div className="text-amber-400 font-bold text-sm">
+              {step === 1 ? "50%" : "100%"}
+            </div>
           </div>
-          <div className="text-orange-300 text-sm font-bold">
-            {step === 1 ? "50%" : "100%"}
-          </div>
-        </div>
-        {/* Progress bar */}
-        <div className="max-w-lg mx-auto mt-3">
-          <div className="h-2 bg-blue-900 rounded-full overflow-hidden">
+          {/* Progress */}
+          <div className="h-1.5 bg-blue-900 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#f97316] rounded-full transition-all duration-500"
+              className="h-full bg-amber-400 rounded-full transition-all duration-500"
               style={{ width: step === 1 ? "50%" : "100%" }}
             />
           </div>
         </div>
       </div>
 
-      {/* Form body */}
-      <div className="max-w-lg mx-auto px-4 py-6">
+      {/* Form */}
+      <div className="max-w-2xl mx-auto px-6 py-8">
 
-        {/* Step 1 — Who are you */}
+        {/* Step 1 */}
         {step === 1 && (
           <div>
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-4">
-              <h2 className="text-[#1a3a6b] font-bold text-lg mb-1">
-                {lang === "hi" ? "आपकी जानकारी" : lang === "mr" ? "तुमची माहिती" : "Your Basic Details"}
-              </h2>
-              <p className="text-gray-400 text-sm mb-5">
-                {lang === "hi" ? "सही जानकारी भरें — बेहतर परिणाम मिलेंगे" : "Fill correctly for best results"}
-              </p>
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-[#1B3A6B] mb-1" style={{ fontFamily: "'Noto Serif', serif" }}>
+                Personal Details
+              </h1>
+              <p className="text-gray-500 text-sm">Enter accurate information for best results</p>
+            </div>
 
-              {/* Name */}
-              <div className="mb-4">
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.name} *
-                </label>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-2">Full Name</label>
                 <input
                   value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder={lang === "hi" ? "जैसे: रमेश कुमार" : "e.g. Ramesh Kumar"}
-                  className="w-full border-2 border-gray-200 focus:border-[#1a3a6b] rounded-lg px-4 py-3 text-gray-800 text-sm outline-none transition-all"
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  placeholder="Enter your full name"
+                  className={inputCls}
                 />
               </div>
 
-              {/* Age */}
-              <div className="mb-4">
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.age} *
-                </label>
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-2">Age</label>
                 <input
                   type="number"
                   value={form.age}
-                  onChange={(e) => setForm({ ...form, age: e.target.value })}
-                  placeholder={lang === "hi" ? "जैसे: 28" : "e.g. 28"}
+                  onChange={e => setForm({ ...form, age: e.target.value })}
+                  placeholder="Your age in years"
                   min="1" max="100"
-                  className="w-full border-2 border-gray-200 focus:border-[#1a3a6b] rounded-lg px-4 py-3 text-gray-800 text-sm outline-none transition-all"
+                  className={inputCls}
                 />
               </div>
 
-              {/* Gender */}
-              <div className="mb-4">
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.gender} *
-                </label>
-                <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-2">Gender</label>
+                <div className="grid grid-cols-3 gap-3">
                   {[
-                    { val: "male", label: lang === "hi" ? "👨 पुरुष" : "👨 Male" },
-                    { val: "female", label: lang === "hi" ? "👩 महिला" : "👩 Female" },
-                    { val: "other", label: lang === "hi" ? "🧑 अन्य" : "🧑 Other" },
-                  ].map((g) => (
+                    { val: "male", label: "Male" },
+                    { val: "female", label: "Female" },
+                    { val: "other", label: "Other" },
+                  ].map(g => (
                     <button
                       key={g.val}
                       onClick={() => setForm({ ...form, gender: g.val })}
-                      className={`py-3 rounded-lg border-2 font-semibold text-sm transition-all
-                        ${form.gender === g.val
-                          ? "border-[#1a3a6b] bg-[#eef2ff] text-[#1a3a6b]"
-                          : "border-gray-200 text-gray-500 hover:border-gray-300"
-                        }`}
+                      className={`py-3 rounded-lg border text-sm transition-all ${form.gender === g.val ? optionActive : optionInactive}`}
                     >
                       {g.label}
                     </button>
@@ -163,65 +144,62 @@ export default function Check() {
                 </div>
               </div>
 
-              {/* State */}
               <div>
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.state} *
-                </label>
-                <select
-                  value={form.state}
-                  onChange={(e) => setForm({ ...form, state: e.target.value })}
-                  className="w-full border-2 border-gray-200 focus:border-[#1a3a6b] rounded-lg px-4 py-3 text-gray-800 text-sm outline-none bg-white transition-all"
-                >
-                  <option value="">{lang === "hi" ? "राज्य चुनें" : "Select your state"}</option>
-                  {states.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
+                <label className="block text-gray-700 font-semibold text-sm mb-2">State / UT</label>
+                <div className="relative">
+                  <select
+                    value={form.state}
+                    onChange={e => setForm({ ...form, state: e.target.value })}
+                    className={selectCls}
+                  >
+                    <option value="">Select your state</option>
+                    {states.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
               </div>
             </div>
 
             <button
               onClick={() => setStep(2)}
               disabled={!canProceed()}
-              className={`w-full py-4 rounded-lg font-bold text-lg transition-all
-                ${canProceed()
-                  ? "bg-[#1a3a6b] hover:bg-[#15306b] text-white shadow-md"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
+              className={`w-full mt-6 py-4 rounded-xl font-bold text-base transition-all ${canProceed() ? "bg-[#1B3A6B] hover:bg-[#15306b] text-white shadow-md hover:shadow-lg" : "bg-gray-100 text-gray-300 cursor-not-allowed"}`}
             >
-              {t.next}
+              Continue
             </button>
           </div>
         )}
 
-        {/* Step 2 — Your situation */}
+        {/* Step 2 */}
         {step === 2 && (
           <div>
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-4">
-              <h2 className="text-[#1a3a6b] font-bold text-lg mb-1">
-                {lang === "hi" ? "आपकी स्थिति" : lang === "mr" ? "तुमची परिस्थिती" : "Your Situation"}
-              </h2>
-              <p className="text-gray-400 text-sm mb-5">
-                {lang === "hi" ? "यह जानकारी योजनाएं खोजने में मदद करती है" : "This helps us match the right schemes"}
-              </p>
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-[#1B3A6B] mb-1" style={{ fontFamily: "'Noto Serif', serif" }}>
+                Your Situation
+              </h1>
+              <p className="text-gray-500 text-sm">This helps us find the most relevant schemes</p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
 
               {/* Category */}
-              <div className="mb-4">
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.category} *
-                </label>
-                <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-2">Social Category</label>
+                <div className="grid grid-cols-2 gap-3">
                   {[
                     { val: "general", label: "General" },
                     { val: "obc", label: "OBC" },
                     { val: "sc", label: "SC (Dalit)" },
                     { val: "st", label: "ST (Tribal)" },
-                  ].map((c) => (
+                  ].map(c => (
                     <button
                       key={c.val}
                       onClick={() => setForm({ ...form, category: c.val })}
-                      className={`${btnBase} ${form.category === c.val ? btnActive : btnInactive}`}
+                      className={`py-3 px-4 rounded-lg border text-sm transition-all text-left flex items-center gap-3 ${form.category === c.val ? optionActive : optionInactive}`}
                     >
-                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${form.category === c.val ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`} />
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-all ${form.category === c.val ? "border-[#1B3A6B] bg-[#1B3A6B]" : "border-gray-300"}`} />
                       {c.label}
                     </button>
                   ))}
@@ -229,24 +207,22 @@ export default function Check() {
               </div>
 
               {/* Occupation */}
-              <div className="mb-4">
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.occupation} *
-                </label>
-                <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-2">Occupation</label>
+                <div className="grid grid-cols-2 gap-3">
                   {[
-                    { val: "student", label: lang === "hi" ? "🎓 छात्र" : "🎓 Student" },
-                    { val: "farmer", label: lang === "hi" ? "🌾 किसान" : "🌾 Farmer" },
-                    { val: "business", label: lang === "hi" ? "💼 व्यवसाय" : "💼 Business" },
-                    { val: "employed", label: lang === "hi" ? "👔 नौकरी" : "👔 Employed" },
-                    { val: "unemployed", label: lang === "hi" ? "🔍 बेरोजगार" : "🔍 Unemployed" },
-                  ].map((o) => (
+                    { val: "student", label: "Student" },
+                    { val: "farmer", label: "Farmer" },
+                    { val: "business", label: "Self-Employed" },
+                    { val: "employed", label: "Salaried" },
+                    { val: "unemployed", label: "Unemployed" },
+                  ].map(o => (
                     <button
                       key={o.val}
                       onClick={() => setForm({ ...form, occupation: o.val })}
-                      className={`${btnBase} ${form.occupation === o.val ? btnActive : btnInactive}`}
+                      className={`py-3 px-4 rounded-lg border text-sm transition-all text-left flex items-center gap-3 ${form.occupation === o.val ? optionActive : optionInactive}`}
                     >
-                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${form.occupation === o.val ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`} />
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-all ${form.occupation === o.val ? "border-[#1B3A6B] bg-[#1B3A6B]" : "border-gray-300"}`} />
                       {o.label}
                     </button>
                   ))}
@@ -254,23 +230,21 @@ export default function Check() {
               </div>
 
               {/* Income */}
-              <div className="mb-4">
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.income} *
-                </label>
-                <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-gray-700 font-semibold text-sm mb-2">Annual Family Income</label>
+                <div className="grid grid-cols-2 gap-3">
                   {[
                     { val: "below1L", label: "Below ₹1 Lakh" },
                     { val: "1to2L", label: "₹1L – ₹2L" },
                     { val: "2to5L", label: "₹2L – ₹5L" },
                     { val: "above5L", label: "Above ₹5L" },
-                  ].map((inc) => (
+                  ].map(inc => (
                     <button
                       key={inc.val}
                       onClick={() => setForm({ ...form, income: inc.val })}
-                      className={`${btnBase} ${form.income === inc.val ? btnActive : btnInactive}`}
+                      className={`py-3 px-4 rounded-lg border text-sm transition-all text-left flex items-center gap-3 ${form.income === inc.val ? optionActive : optionInactive}`}
                     >
-                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${form.income === inc.val ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`} />
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-all ${form.income === inc.val ? "border-[#1B3A6B] bg-[#1B3A6B]" : "border-gray-300"}`} />
                       {inc.label}
                     </button>
                   ))}
@@ -279,28 +253,26 @@ export default function Check() {
 
               {/* Special */}
               <div>
-                <label className="block text-gray-700 font-semibold text-sm mb-1.5">
-                  {t.special} <span className="text-gray-400 font-normal">(Optional)</span>
-                </label>
+                <label className="block text-gray-700 font-semibold text-sm mb-1">Additional Conditions <span className="text-gray-400 font-normal">(optional)</span></label>
+                <p className="text-gray-400 text-xs mb-3">Select all that apply — unlocks more schemes</p>
                 <div className="space-y-2">
                   {[
-                    { val: "bpl", label: lang === "hi" ? "BPL कार्ड धारक" : "BPL Card Holder" },
-                    { val: "disabled", label: lang === "hi" ? "दिव्यांग" : "Differently Abled" },
-                    { val: "woman_entrepreneur", label: lang === "hi" ? "महिला उद्यमी" : "Woman Entrepreneur" },
-                    { val: "minority", label: lang === "hi" ? "अल्पसंख्यक" : "Minority Community" },
-                  ].map((s) => (
+                    { val: "bpl", label: "BPL Card Holder" },
+                    { val: "disabled", label: "Differently Abled (Divyangjan)" },
+                    { val: "woman_entrepreneur", label: "Woman Entrepreneur" },
+                    { val: "minority", label: "Minority Community" },
+                  ].map(s => (
                     <button
                       key={s.val}
                       onClick={() => toggleSpecial(s.val)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all text-left
-                        ${form.special.includes(s.val)
-                          ? "border-[#1a3a6b] bg-[#eef2ff] text-[#1a3a6b]"
-                          : "border-gray-200 text-gray-600 hover:border-gray-300"
-                        }`}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-sm font-medium transition-all text-left ${form.special.includes(s.val) ? optionActive : optionInactive}`}
                     >
-                      <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0
-                        ${form.special.includes(s.val) ? "border-[#1a3a6b] bg-[#1a3a6b]" : "border-gray-300"}`}>
-                        {form.special.includes(s.val) && <span className="text-white text-xs">✓</span>}
+                      <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${form.special.includes(s.val) ? "border-[#1B3A6B] bg-[#1B3A6B]" : "border-gray-300"}`}>
+                        {form.special.includes(s.val) && (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
                       </span>
                       {s.label}
                     </button>
@@ -312,17 +284,17 @@ export default function Check() {
             <button
               onClick={handleSubmit}
               disabled={!canProceed()}
-              className={`w-full py-4 rounded-lg font-bold text-lg transition-all
-                ${canProceed()
-                  ? "bg-[#f97316] hover:bg-orange-600 text-white shadow-md"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
+              className={`w-full mt-6 py-4 rounded-xl font-bold text-base transition-all ${canProceed() ? "bg-[#D97706] hover:bg-amber-600 text-white shadow-md hover:shadow-lg" : "bg-gray-100 text-gray-300 cursor-not-allowed"}`}
             >
-              {t.submit}
+              Find My Benefits
             </button>
 
             <p className="text-center text-gray-400 text-xs mt-3">
-              🔒 {lang === "hi" ? "आपकी जानकारी सुरक्षित है" : "Your information is safe & private"}
+              <svg className="inline w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              Your information is private and secure
             </p>
           </div>
         )}
