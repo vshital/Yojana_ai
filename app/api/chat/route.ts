@@ -108,6 +108,7 @@ Next step: [one clear action]`;
         temperature: 0.6,
       }),
     });
+    //where is the error
 
     if (!groqRes.ok) {
       const err = await groqRes.json();
@@ -127,4 +128,3 @@ Next step: [one clear action]`;
     });
   }
 }
-//whats the error
