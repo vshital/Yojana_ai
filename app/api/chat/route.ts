@@ -109,7 +109,7 @@ Next step: [one clear action]`;
       }),
     });
 
-    if (!groqRes.ok) {  
+    if (!groqRes.ok) {
       const err = await groqRes.json();
       return NextResponse.json({
         reply: `Error: ${err?.error?.message || "Please try again."}`,
