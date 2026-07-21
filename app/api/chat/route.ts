@@ -22,6 +22,7 @@ export async function POST(req: Request) {
       gu: "ફક્ત ગુજરાતીમાં જ જવાબ આપો. સરળ ગુજરાતી વાપરો.",
       pa: "ਸਿਰਫ਼ ਪੰਜਾਬੀ ਵਿੱਚ ਜਵਾਬ ਦਿਓ। ਸਰਲ ਪੰਜਾਬੀ ਵਰਤੋ।",
     };
+//useless changes are done once again
 
     const langInstruction = languageInstructions[lang] || languageInstructions.en;
 
